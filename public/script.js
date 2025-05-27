@@ -1,3 +1,4 @@
+// Kompletny kod klienta (script.js)
 window.addEventListener('DOMContentLoaded', () => {
   const socket = io();
   let roomName = '';
@@ -5,6 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let flippedCards = [];
   let matched = [];
   let values = [];
+  let canClick = true;
 
   const board = document.getElementById('board');
   const status = document.getElementById('status');
@@ -26,8 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('turnUpdate', (playerId) => {
     turn = playerId === socket.id;
+    canClick = true;
     status.innerText = turn ? 'Twój ruch!' : 'Tura przeciwnika...';
-    flippedCards = []; // czyścimy po każdej zmianie tury
+    flippedCards = [];
   });
 
   socket.on('cardFlipped', ({ index, player }) => {
@@ -36,14 +39,13 @@ window.addEventListener('DOMContentLoaded', () => {
       card.classList.add('flipped');
       card.textContent = values[index];
     }
-
     flippedCards.push({ index, player });
 
-    // tylko jeśli obie karty kliknął ten sam gracz
     if (
       flippedCards.length === 2 &&
       flippedCards[0].player === flippedCards[1].player
     ) {
+      canClick = false;
       const [a, b] = flippedCards;
       const match = values[a.index] === values[b.index];
 
@@ -74,6 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
       div.addEventListener('click', () => {
         if (
           turn &&
+          canClick &&
           !div.classList.contains('flipped') &&
           flippedCards.length < 2 &&
           !matched.includes(i)
