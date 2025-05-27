@@ -25,20 +25,28 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('turnUpdate', (playerId) => {
-    console.log("Tura gracza:", playerId); // DEBUG
     turn = playerId === socket.id;
     status.innerText = turn ? 'Twój ruch!' : 'Tura przeciwnika...';
+    flippedCards = []; // czyścimy po każdej zmianie tury
   });
 
   socket.on('cardFlipped', ({ index, player }) => {
     const card = document.querySelectorAll('.card')[index];
-    card.classList.add('flipped');
-    card.textContent = values[index];
+    if (!card.classList.contains('flipped')) {
+      card.classList.add('flipped');
+      card.textContent = values[index];
+    }
+
     flippedCards.push({ index, player });
 
-    if (flippedCards.length === 2) {
+    // tylko jeśli obie karty kliknął ten sam gracz
+    if (
+      flippedCards.length === 2 &&
+      flippedCards[0].player === flippedCards[1].player
+    ) {
       const [a, b] = flippedCards;
       const match = values[a.index] === values[b.index];
+
       setTimeout(() => {
         socket.emit('matchResult', { roomName, matched: match });
       }, 1000);
@@ -48,9 +56,9 @@ window.addEventListener('DOMContentLoaded', () => {
   socket.on('matchChecked', ({ matched: isMatch, player }) => {
     if (!isMatch) {
       flippedCards.forEach(({ index }) => {
-        const c = document.querySelectorAll('.card')[index];
-        c.classList.remove('flipped');
-        c.textContent = '';
+        const card = document.querySelectorAll('.card')[index];
+        card.classList.remove('flipped');
+        card.textContent = '';
       });
     } else {
       matched.push(...flippedCards.map(fc => fc.index));
