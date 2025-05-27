@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Memory Multiplayer – Gra</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Memory Multiplayer</h1>
+
+  <div id="info">
+    <div id="player1">Gracz 1: ...</div>
+    <div id="player2">Gracz 2: ...</div>
+    <div id="status">Oczekiwanie na przeciwnika...</div>
+    <div id="score">Wynik: 0 : 0</div>
+  </div>
+
+  <div id="board"></div>
+
+  <div id="winner" style="display:none;"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

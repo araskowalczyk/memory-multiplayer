@@ -2,15 +2,26 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Memory Multiplayer</title>
+  <title>Memory Multiplayer – Dołącz</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Memory Multiplayer</h1>
-  <div id="status">Łączenie z grą...</div>
-  <div id="board"></div>
+  <form id="join-form">
+    <label for="nickname">Twój nick:</label>
+    <input type="text" id="nickname" required>
+    <button type="submit">Dołącz do gry</button>
+  </form>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script>
+    document.getElementById('join-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nick = document.getElementById('nickname').value.trim();
+      if (nick) {
+        localStorage.setItem('nickname', nick);
+        window.location.href = '/game.html';
+      }
+    });
+  </script>
 </body>
 </html>
