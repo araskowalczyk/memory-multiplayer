@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   socket.on('turnUpdate', (playerId) => {
     turn = playerId === socket.id;
-    canClick = true;
+    canClick = turn;
     status.innerText = turn ? 'Twój ruch!' : 'Tura przeciwnika...';
     flippedCards = [];
   });
@@ -43,7 +43,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (
       flippedCards.length === 2 &&
-      flippedCards[0].player === flippedCards[1].player
+      flippedCards[0].player === socket.id &&
+      flippedCards[1].player === socket.id
     ) {
       canClick = false;
       const [a, b] = flippedCards;

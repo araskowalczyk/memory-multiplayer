@@ -11,26 +11,35 @@ app.use(express.static('public'));
 let rooms = {};
 
 io.on('connection', (socket) => {
-  console.log(`Połączono: ${socket.id}`);
+console.log(`Połączono: ${socket.id}`);
 
-  socket.on('joinGame', () => {
+socket.on('joinGame', () => {
     const roomName = findOrCreateRoom(socket);
     const room = rooms[roomName];
 
     socket.emit('gameJoined', { name: roomName, board: room.board });
 
     if (Object.keys(room.players).length === 2 && !room.currentTurn) {
-      room.currentTurn = Object.keys(room.players)[0];
-      io.to(roomName).emit('playersInRoom', Object.keys(room.players));
-      io.to(roomName).emit('turnUpdate', room.currentTurn);
+        room.currentTurn = Object.keys(room.players)[0];
+        io.to(roomName).emit('playersInRoom', Object.keys(room.players));
+        io.to(roomName).emit('turnUpdate', room.currentTurn);
     }
-  });
+});
 
-  socket.on('flipCard', ({ roomName, index }) => {
-    io.to(roomName).emit('cardFlipped', { index, player: socket.id });
-  });
+socket.on('flipCard', ({ roomName, index }) => {
+  const room = rooms[roomName];
+  if (!room || !room.players) return;
 
-  socket.on('matchResult', ({ roomName, matched }) => {
+console.log(`[Ruch] ${socket.id} kliknął, tura gracza: ${room.currentTurn}`);
+
+  // 👇 tylko gracz, który ma turę, może wykonywać ruchy
+  if (room.currentTurn !== socket.id) return;
+
+  io.to(roomName).emit('cardFlipped', { index, player: socket.id });
+});
+
+
+socket.on('matchResult', ({ roomName, matched }) => {
     const room = rooms[roomName];
     if (!room || !room.players) return;
 
@@ -41,51 +50,51 @@ io.on('connection', (socket) => {
     const nextPlayer = players.find(id => id !== socket.id);
 
     setTimeout(() => {
-      if (nextPlayer) {
+    if (nextPlayer) {
         room.currentTurn = nextPlayer;
         io.to(roomName).emit('turnUpdate', nextPlayer);
-      }
+}
     }, 1000);
-  });
+});
 
-  socket.on('disconnect', () => {
+socket.on('disconnect', () => {
     for (let r in rooms) {
-      if (rooms[r].players[socket.id]) {
+    if (rooms[r].players[socket.id]) {
         delete rooms[r].players[socket.id];
         if (Object.keys(rooms[r].players).length === 0) {
-          delete rooms[r];
+        delete rooms[r];
         }
         break;
-      }
     }
-  });
+    }
+});
 });
 
 function findOrCreateRoom(socket) {
-  for (let r in rooms) {
+for (let r in rooms) {
     if (Object.keys(rooms[r].players).length < 2) {
-      rooms[r].players[socket.id] = true;
-      socket.join(r);
-      return r;
+    rooms[r].players[socket.id] = true;
+    socket.join(r);
+    return r;
     }
-  }
+}
 
-  const roomName = 'room_' + Math.random().toString(36).substring(7);
-  rooms[roomName] = {
+const roomName = 'room_' + Math.random().toString(36).substring(7);
+rooms[roomName] = {
     players: {},
     board: generateBoard(),
     currentTurn: null
-  };
-  rooms[roomName].players[socket.id] = true;
-  socket.join(roomName);
-  return roomName;
+};
+rooms[roomName].players[socket.id] = true;
+socket.join(roomName);
+return roomName;
 }
 
 function generateBoard() {
-  const cards = [...'AABBCCDDEEFFGGHH'];
-  return cards.sort(() => 0.5 - Math.random());
+const cards = [...'AABBCCDDEEFFGGHH'];
+return cards.sort(() => 0.5 - Math.random());
 }
 
 server.listen(3000, () => {
-  console.log('✅ Serwer działa na porcie 3000');
+console.log('✅ Serwer działa na porcie 3000');
 });
