@@ -4,14 +4,17 @@
   <meta charset="UTF-8">
   <title>Memory Multiplayer – Dołącz</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
 </head>
-<body>
-  <h1>Memory Multiplayer</h1>
-  <form id="join-form">
-    <label for="nickname">Twój nick:</label>
-    <input type="text" id="nickname" required>
-    <button type="submit">Dołącz do gry</button>
-  </form>
+<body class="login-page">
+  <div class="login-container">
+    <h1>🎲 Gra Memory</h1>
+    <form id="join-form">
+      <label for="nickname">🎯 Podaj swój nick:</label>
+      <input type="text" id="nickname" required placeholder="np. SuperGracz123">
+      <button type="submit">🚀 Dołącz do gry</button>
+    </form>
+  </div>
 
   <script>
     document.getElementById('join-form').addEventListener('submit', (e) => {
