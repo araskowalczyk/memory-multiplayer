@@ -4,11 +4,10 @@ body {
   background: #f2f2f2;
 }
 #board {
-  width: 440px;
-  margin: 20px auto;
   display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 10px;
+  grid-template-columns: repeat(8, 100px); /* 8 kolumn */
+  grid-gap: 10px;
+  justify-content: center;
 }
 .card {
   width: 100px;

@@ -117,8 +117,9 @@ function findOrCreateRoom(socket, nickname) {
 }
 
 function generateBoard() {
-  const letters = [...'AABBCCDDEEFFGGHH'];
-  return letters.sort(() => 0.5 - Math.random());
+  const images = Array.from({ length: 20 }, (_, i) => `img${i + 1}.png`);
+  const cards = [...images, ...images]; // 2 kopie = 40 kart
+  return cards.sort(() => 0.5 - Math.random());
 }
 
 server.listen(3000, () => {
