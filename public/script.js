@@ -26,6 +26,19 @@ window.addEventListener('DOMContentLoaded', () => {
     nicknames = room.players;
     playerId = room.yourId;
     renderBoard();
+
+    // Dodajemy przycisk OD NOWA po dołączeniu do gry
+  const restartBtn = document.createElement('button');
+  restartBtn.innerText = '🔄 Od nowa';
+  restartBtn.style.marginTop = '20px';
+  restartBtn.style.padding = '10px 20px';
+  restartBtn.style.fontSize = '16px';
+  restartBtn.style.cursor = 'pointer';
+  restartBtn.addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+  document.body.appendChild(restartBtn);  
+// koniec wklejonego kodu
   });
 
   socket.on('playersInRoom', (nicks) => {
