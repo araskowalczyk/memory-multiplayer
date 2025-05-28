@@ -43,27 +43,28 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('cardFlipped', ({ index, player }) => {
-    const card = document.querySelectorAll('.card')[index];
-    if (!card.classList.contains('flipped')) {
-      card.classList.add('flipped');
-      card.textContent = values[index];
-    }
-    flippedCards.push({ index, player });
+  const card = document.querySelectorAll('.card')[index];
+  if (!card.classList.contains('flipped')) {
+    card.classList.add('flipped');
+    card.innerHTML = `<img src="images/${values[index]}" alt="karta">`;
+  }
+  flippedCards.push({ index, player });
 
-    if (
-      flippedCards.length === 2 &&
-      flippedCards[0].player === playerId &&
-      flippedCards[1].player === playerId
-    ) {
-      canClick = false;
-      const [a, b] = flippedCards;
-      const match = values[a.index] === values[b.index];
+  if (
+    flippedCards.length === 2 &&
+    flippedCards[0].player === playerId &&
+    flippedCards[1].player === playerId
+  ) {
+    canClick = false;
+    const [a, b] = flippedCards;
+    const match = values[a.index] === values[b.index];
 
-      setTimeout(() => {
-        socket.emit('matchResult', { roomName, matched: match });
-      }, 1000);
-    }
-  });
+    setTimeout(() => {
+      socket.emit('matchResult', { roomName, matched: match });
+    }, 1000);
+  }
+});
+
 
   socket.on('matchChecked', ({ matched: isMatch }) => {
     if (!isMatch) {
